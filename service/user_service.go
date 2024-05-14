@@ -8,6 +8,12 @@ import (
 	"github.com/moroz/webauthn-academy-go/types"
 )
 
+func init() {
+	validate.Config(func(opt *validate.GlobalOption) {
+		opt.StopOnError = false
+	})
+}
+
 type UserService struct {
 	store store.UserStore
 }

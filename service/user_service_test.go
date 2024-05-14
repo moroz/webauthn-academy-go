@@ -23,3 +23,23 @@ func (s *ServiceTestSuite) TestRegisterUser() {
 	match, err := argon2id.ComparePasswordAndHash(params.Password, user.PasswordHash)
 	s.True(match)
 }
+
+func (s *ServiceTestSuite) TestRegisterUserWithInvalidParams() {
+	params := types.NewUserParams{
+		Email:                "invalid",
+		DisplayName:          "Example User",
+		Password:             "short",
+		PasswordConfirmation: "not matching",
+	}
+
+	srv := service.NewUserService(s.db)
+	user, err, validationErrors := srv.RegisterUser(params)
+	s.NoError(err)
+	s.Nil(user)
+	msg := validationErrors.FieldOne("Email")
+	s.Equal("is not a valid email address", msg)
+	msg = validationErrors.FieldOne("Password")
+	s.Equal("must be between 8 and 80 characters long", msg)
+	msg = validationErrors.FieldOne("PasswordConfirmation")
+	s.Contains(msg, "do not match")
+}
