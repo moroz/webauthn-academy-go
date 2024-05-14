@@ -22,8 +22,6 @@ type NewUserParams struct {
 	PasswordConfirmation string `schema:"passwordConfirmation" validate:"required|eq_field:Password"`
 }
 
-type ValidationError map[string]map[string]string
-
 func (p NewUserParams) Messages() map[string]string {
 	return validate.MS{
 		"email":    "is not a valid email address",
