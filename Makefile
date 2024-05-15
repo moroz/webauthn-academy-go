@@ -1,3 +1,6 @@
+install:
+	which modd || go install github.com/cortesi/modd/cmd/modd@latest
+
 guard-%:
 	@ test -n "${$*}" || (echo "FATAL: Environment variable $* is not set!"; exit 1)
 

@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ if (and . .Title) }}{{ .Title }} | {{ end }}Academy</title>
+  </head>
+  <body>
+    {{ template "content" . }}
+  </body>
+</html>
