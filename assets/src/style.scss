@@ -1,0 +1,84 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  font-size: 100%;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #fff;
+  color: #000;
+}
+
+.layout.unauthenticated {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  background: #f2f3f4;
+
+  footer,
+  header {
+    text-align: center;
+  }
+}
+
+.card {
+  border: 1px solid;
+}
+
+.field {
+  margin-bottom: 0.75rem;
+  min-width: 350px;
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+
+  input {
+    width: 100%;
+  }
+}
+
+.card {
+  padding: 1.5rem;
+
+  h1,
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  border: 1px solid #666;
+  height: 40px;
+  border-radius: 3px;
+}
+
+.button.is-primary {
+  color: #fff;
+  background: #111;
+  font-weight: bold;
+  font-family: inherit;
+  font-size: 1rem;
+  height: 40px;
+  outline: 0;
+  border: 0;
+  border-radius: 3px;
+  margin-top: 0.5rem;
+}
+
+.button.is-fullwidth {
+  width: 100%;
+}

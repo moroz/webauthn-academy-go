@@ -18,12 +18,14 @@ func SessionHandler(db *sqlx.DB) sessionHandler {
 }
 
 type sessionsNewAssigns struct {
-	Title string
+	RequestContext
 }
 
 func (h *sessionHandler) New(w http.ResponseWriter, r *http.Request) {
 	err := templates.Sessions.New.Execute(w, sessionsNewAssigns{
-		Title: "Sign in",
+		RequestContext: RequestContext{
+			Title: "Sign in",
+		},
 	})
 	if err != nil {
 		log.Print(err)

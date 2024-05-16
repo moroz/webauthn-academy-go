@@ -19,13 +19,15 @@ func UserHandler(db *sqlx.DB) userHandler {
 }
 
 type usersNewAssigns struct {
-	Title  string
+	RequestContext
 	Params types.NewUserParams
 }
 
 func (h *userHandler) New(w http.ResponseWriter, r *http.Request) {
 	err := templates.Users.New.Execute(w, usersNewAssigns{
-		Title:  "Register",
+		RequestContext: RequestContext{
+			Title: "Register",
+		},
 		Params: types.NewUserParams{},
 	})
 	if err != nil {

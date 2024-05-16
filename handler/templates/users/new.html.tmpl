@@ -1,54 +1,62 @@
 {{ define "content" }}
-<h1>Register</h1>
+<div class="layout unauthenticated">
+  <form action="/users/register" method="POST">
+    <header>
+      <h1>Register</h1>
+    </header>
 
-<form action="/users/register" method="POST">
-  <div class="field">
-    <label for="email">Email:</label>
-    <input
-      id="email"
-      type="email"
-      name="email"
-      value="{{ .Params.Email }}"
-      autocomplete="email"
-      autofocus
-    />
-  </div>
+    <div class="field">
+      <label for="email">Email:</label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        value="{{ .Params.Email }}"
+        autocomplete="email"
+        autofocus
+      />
+    </div>
 
-  <div class="field">
-    <label for="displayName">Display name:</label>
-    <input
-      id="displayName"
-      type="text"
-      name="displayName"
-      value="{{ .Params.DisplayName }}"
-      autocomplete="name"
-    />
-  </div>
+    <div class="field">
+      <label for="displayName">Display name:</label>
+      <input
+        id="displayName"
+        type="text"
+        name="displayName"
+        value="{{ .Params.DisplayName }}"
+        autocomplete="name"
+      />
+    </div>
 
-  <div class="field">
-    <label for="password">Password:</label>
-    <input
-      id="password"
-      type="password"
-      name="password"
-      autocomplete="new-password"
-    />
-  </div>
+    <div class="field">
+      <label for="password">Password:</label>
+      <input
+        id="password"
+        type="password"
+        name="password"
+        autocomplete="new-password"
+      />
+    </div>
 
-  <div class="field">
-    <label for="passwordConfirmation">Confirm password:</label>
-    <input
-      id="passwordConfirmation"
-      type="password"
-      name="passwordConfirmation"
-      autocomplete="new-password"
-    />
-  </div>
+    <div class="field">
+      <label for="passwordConfirmation">Confirm password:</label>
+      <input
+        id="passwordConfirmation"
+        type="password"
+        name="passwordConfirmation"
+        autocomplete="new-password"
+      />
+    </div>
 
-  <div>
-    <button type="submit" class="button">Submit</button>
-  </div>
+    <div>
+      <button type="submit" class="button is-fullwidth is-primary">
+        Submit
+      </button>
+    </div>
 
-  <p>Already have an account? <a href="/sign-in">Sign in</a></p>
-</form>
+    <footer>
+      <p>Already have an account? <a href="/sign-in">Sign in</a></p>
+    </footer>
+  </form>
+</div>
 {{ end }}
