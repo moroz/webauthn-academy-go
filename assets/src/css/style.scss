@@ -1,3 +1,5 @@
+@import "./palette";
+
 *,
 *::after,
 *::before {
@@ -16,15 +18,37 @@ body {
   color: #000;
 }
 
+h1,
+h2 {
+  color: $primary-text;
+}
+
+a,
+a:visited {
+  color: $primary;
+}
+
 .layout.unauthenticated {
   display: grid;
   place-items: center;
   height: 100vh;
-  background: #f2f3f4;
+  background: $blue-50;
+
+  p:not([class]) {
+    margin: 0;
+  }
 
   footer,
   header {
     text-align: center;
+  }
+
+  header {
+    margin-bottom: 0.75rem;
+  }
+
+  footer {
+    margin-top: 1.75rem;
   }
 }
 
@@ -40,6 +64,7 @@ body {
     display: block;
     font-weight: bold;
     margin-bottom: 0.25rem;
+    color: $primary-text;
   }
 
   input {
@@ -49,6 +74,10 @@ body {
 
 .card {
   padding: 1.5rem;
+  border: 1px solid $primary;
+  box-shadow: 0 0 10px transparentize($primary, 0.8);
+  border-radius: 5px;
+  background: white;
 
   h1,
   h2 {
@@ -64,11 +93,14 @@ input[type="email"] {
   border: 1px solid #666;
   height: 40px;
   border-radius: 3px;
+  font: inherit;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 .button.is-primary {
   color: #fff;
-  background: #111;
+  background: $primary;
   font-weight: bold;
   font-family: inherit;
   font-size: 1rem;
