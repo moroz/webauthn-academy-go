@@ -1,28 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/moroz/webauthn-academy-go/config"
 	"github.com/moroz/webauthn-academy-go/handler"
 )
 
-func MustGetenv(key string) string {
-	value := os.Getenv(key)
-	if value == "" {
-		msg := fmt.Sprintf("FATAL: Environment variable %s is not set", key)
-		log.Fatal(msg)
-	}
-	return value
-}
-
 func main() {
-	db := sqlx.MustConnect("postgres", MustGetenv("DATABASE_URL"))
+	db := sqlx.MustConnect("postgres", config.DatabaseURL)
 
 	r := chi.NewRouter()
 
