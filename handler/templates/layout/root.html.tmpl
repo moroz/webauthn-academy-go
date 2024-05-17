@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>{{ if (and . .Title) }}{{ .Title }} | {{ end }}Academy</title>
-    {{ if not .IsProd }}
     <script type="module" src="http://localhost:4000/src/main.ts"></script>
-    {{ end }}
   </head>
   <body>
     {{ template "content" . }}

@@ -23,3 +23,14 @@ func (s *UserStore) InsertUser(user *types.User) (*types.User, error) {
 	}
 	return &result, nil
 }
+
+const getUserByEmailQuery = `select * from users where email = $1`
+
+func (s *UserStore) GetUserByEmail(email string) (*types.User, error) {
+	var result types.User
+	err := s.db.Get(&result, getUserByEmailQuery, email)
+	if err != nil {
+		return nil, err
+	}
+	return &result, err
+}

@@ -24,6 +24,7 @@ type NewUserParams struct {
 
 func (p NewUserParams) Messages() map[string]string {
 	return validate.MS{
+		"required": "can't be blank",
 		"email":    "is not a valid email address",
 		"min_len":  "must be between 8 and 80 characters long",
 		"max_len":  "must be between 8 and 80 characters long",

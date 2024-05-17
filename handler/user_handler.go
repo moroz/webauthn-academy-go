@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gookit/validate"
 	"github.com/jmoiron/sqlx"
 	"github.com/moroz/webauthn-academy-go/handler/templates"
 	"github.com/moroz/webauthn-academy-go/service"
@@ -21,6 +22,7 @@ func UserHandler(db *sqlx.DB) userHandler {
 type usersNewAssigns struct {
 	RequestContext
 	Params types.NewUserParams
+	Errors validate.Errors
 }
 
 func (h *userHandler) New(w http.ResponseWriter, r *http.Request) {
@@ -36,16 +38,20 @@ func (h *userHandler) New(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	var params types.NewUserParams
+	err := decoder.Decode(&params, r.PostForm)
 	if err != nil {
 		handleError(w, http.StatusBadRequest)
 		return
 	}
 
-	var params types.NewUserParams
-	err = decoder.Decode(&params, r.PostForm)
-	if err != nil {
-		handleError(w, http.StatusBadRequest)
-		return
-	}
+	_, err, validationErrors := h.us.RegisterUser(params)
+
+	err = templates.Users.New.Execute(w, usersNewAssigns{
+		RequestContext: RequestContext{
+			Title: "Register",
+		},
+		Params: params,
+		Errors: validationErrors,
+	})
 }

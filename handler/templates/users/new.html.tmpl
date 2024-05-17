@@ -5,7 +5,8 @@
       <h1>Register</h1>
     </header>
 
-    <div class="field">
+    {{ $err := .Errors.FieldOne "Email" }}
+    <div class="field {{ if $err }}has-error{{ end }}">
       <label for="email">Email:</label>
       <input
         id="email"
@@ -15,9 +16,13 @@
         autocomplete="email"
         autofocus
       />
+      {{ if $err }}
+      <p class="error-explanation">{{ $err }}</p>
+      {{ end }}
     </div>
 
-    <div class="field">
+    {{ $err := .Errors.FieldOne "DisplayName" }}
+    <div class="field {{ if $err }}has-error{{ end }}">
       <label for="displayName">Display name:</label>
       <input
         id="displayName"
@@ -26,9 +31,13 @@
         value="{{ .Params.DisplayName }}"
         autocomplete="name"
       />
+      {{ if $err }}
+      <p class="error-explanation">{{ $err }}</p>
+      {{ end }}
     </div>
 
-    <div class="field">
+    {{ $err := .Errors.FieldOne "Password" }}
+    <div class="field {{ if $err }}has-error{{ end }}">
       <label for="password">Password:</label>
       <input
         id="password"
@@ -36,9 +45,13 @@
         name="password"
         autocomplete="new-password"
       />
+      {{ if $err }}
+      <p class="error-explanation">{{ $err }}</p>
+      {{ end }}
     </div>
 
-    <div class="field">
+    {{ $err := .Errors.FieldOne "PasswordConfirmation" }}
+    <div class="field {{ if $err }}has-error{{ end }}">
       <label for="passwordConfirmation">Confirm password:</label>
       <input
         id="passwordConfirmation"
@@ -46,6 +59,9 @@
         name="passwordConfirmation"
         autocomplete="new-password"
       />
+      {{ if $err }}
+      <p class="error-explanation">{{ $err }}</p>
+      {{ end }}
     </div>
 
     <div>

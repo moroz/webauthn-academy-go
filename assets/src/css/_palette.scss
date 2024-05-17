@@ -2,5 +2,8 @@ $blue-50: #e3f2fd;
 $blue-900: #0d47a1;
 $indigo-900: #1a237e;
 
+$red: red;
+$danger: $red;
+
 $primary: $indigo-900;
 $primary-text: desaturate($indigo-900, 20%);

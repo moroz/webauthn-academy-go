@@ -70,6 +70,25 @@ a:visited {
   input {
     width: 100%;
   }
+
+  &.has-error {
+    label {
+      color: $danger;
+    }
+
+    input {
+      border-color: $danger;
+
+      &:focus {
+        outline-color: $danger;
+      }
+    }
+  }
+}
+
+.error-explanation {
+  margin-top: 0.25rem;
+  color: $danger;
 }
 
 .card {

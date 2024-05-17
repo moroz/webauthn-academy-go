@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/moroz/webauthn-academy-go/config"
@@ -16,11 +17,18 @@ func main() {
 
 	r := chi.NewRouter()
 
+	r.Use(middleware.Logger)
+
 	users := handler.UserHandler(db)
 	r.Get("/", users.New)
 
 	sessions := handler.SessionHandler(db)
 	r.Get("/sign-in", sessions.New)
+
+	r.Group(func(r chi.Router) {
+		r.Use(handler.ParseForm)
+		r.Post("/users/register", users.Create)
+	})
 
 	log.Println("Listening on port 3000")
 	log.Fatal(http.ListenAndServe(":3000", r))
