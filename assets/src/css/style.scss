@@ -89,6 +89,10 @@ a:visited {
 .error-explanation {
   margin-top: 0.25rem;
   color: $danger;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .card {

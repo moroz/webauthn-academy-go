@@ -13,3 +13,11 @@ templ RootLayout(title string) {
 		</body>
 	</html>
 }
+
+templ Unauthenticated(title string) {
+	@RootLayout(title) {
+		<div class="layout unauthenticated">
+			{ children... }
+		</div>
+	}
+}
