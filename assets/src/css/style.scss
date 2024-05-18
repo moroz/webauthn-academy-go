@@ -32,7 +32,7 @@ a:visited {
   display: grid;
   place-items: center;
   height: 100vh;
-  background: $blue-50;
+  background: $body-bg;
 
   p:not([class]) {
     margin: 0;
@@ -93,7 +93,7 @@ a:visited {
 
 .card {
   padding: 1.5rem;
-  border: 1px solid $primary;
+  border: 1px solid $primary-text;
   box-shadow: 0 0 10px transparentize($primary, 0.8);
   border-radius: 5px;
   background: white;

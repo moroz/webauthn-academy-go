@@ -7,6 +7,7 @@ import (
 )
 
 type RequestContext struct {
+
 	Title string
 }
 

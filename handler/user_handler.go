@@ -6,8 +6,8 @@ import (
 
 	"github.com/gookit/validate"
 	"github.com/jmoiron/sqlx"
-	"github.com/moroz/webauthn-academy-go/handler/templates"
 	"github.com/moroz/webauthn-academy-go/service"
+	"github.com/moroz/webauthn-academy-go/templates/users"
 	"github.com/moroz/webauthn-academy-go/types"
 )
 
@@ -26,12 +26,7 @@ type usersNewAssigns struct {
 }
 
 func (h *userHandler) New(w http.ResponseWriter, r *http.Request) {
-	err := templates.Users.New.Execute(w, usersNewAssigns{
-		RequestContext: RequestContext{
-			Title: "Register",
-		},
-		Params: types.NewUserParams{},
-	})
+	err := users.New(types.NewUserParams{}, nil).Render(r.Context(), w)
 	if err != nil {
 		log.Print(err)
 	}
@@ -47,11 +42,14 @@ func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	_, err, validationErrors := h.us.RegisterUser(params)
 
-	err = templates.Users.New.Execute(w, usersNewAssigns{
-		RequestContext: RequestContext{
-			Title: "Register",
-		},
-		Params: params,
-		Errors: validationErrors,
-	})
+	if err != nil || validationErrors != nil {
+		users.New(params, validationErrors).Render(r.Context(), w)
+		err := users.New(types.NewUserParams{}, nil).Render(r.Context(), w)
+		if err != nil {
+			log.Print(err)
+		}
+		return
+	}
+
+	http.Redirect(w, r, "/sign-in", http.StatusMovedPermanently)
 }

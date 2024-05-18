@@ -1,1 +1,4 @@
-server
+/server
+**/*_templ.go
+.envrc
+
