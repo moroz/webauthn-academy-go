@@ -43,6 +43,11 @@ func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 	_, err, validationErrors := h.us.RegisterUser(params)
 
 	if err != nil || validationErrors != nil {
+		addFlash(r, w, types.FlashMessage{
+			Severity: types.FlashMessageSeverity_Error,
+			Content:  "An error occurred, please review:",
+		})
+
 		users.New(params, validationErrors).Render(r.Context(), w)
 		err := users.New(types.NewUserParams{}, nil).Render(r.Context(), w)
 		if err != nil {

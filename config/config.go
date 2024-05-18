@@ -26,5 +26,9 @@ func MustGetenvBase64(key string) []byte {
 	return value
 }
 
-var SessionKey = MustGetenvBase64("SESSION_KEY_BASE64")
+var SessionSigner = MustGetenvBase64("SESSION_KEY_BASE64")
 var DatabaseURL = MustGetenv("DATABASE_URL")
+
+const SessionContextKey = "session"
+const FlashContextKey = "flash"
+const SessionKey = "_academy_session"

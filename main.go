@@ -18,6 +18,8 @@ func main() {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
+	r.Use(handler.FetchSession)
+	r.Use(handler.FetchFlash)
 
 	users := handler.UserHandler(db)
 	r.Get("/", users.New)

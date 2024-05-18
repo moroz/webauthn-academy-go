@@ -17,6 +17,7 @@ templ New(params types.NewUserParams, errors validate.Errors) {
 			<header>
 				<h1>Register</h1>
 			</header>
+			@layout.Flash()
 			<div class={ fieldClass(errors.FieldOne("Email")) }>
 				<label for="email">Email:</label>
 				<input
