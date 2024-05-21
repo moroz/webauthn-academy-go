@@ -1,21 +1,16 @@
-$blue-50: #e3f2fd;
-$blue-900: #0d47a1;
-$indigo-900: #1a237e;
-
-$lime-50: #f7fee7;
-$lime-100: #ecfccb;
-
 $green-50: #f0fdf4;
 $green-100: #dcfce7;
 $green-900: #14532d;
 
-$red-900: #7f1d1d;
 $red-100: #fee2e2;
 $red-200: #fecaca;
+$red-600: #dc2626;
+$red-900: #7f1d1d;
 
-$red: #dc2626;
-$danger: $red;
+$danger: $red-600;
 
 $body-bg: $green-50;
 $primary: $green-900;
-$primary-text: desaturate($primary, 20%);
+$primary-darker: desaturate($primary, 20%);
+
+$family-sans: Inter, Arial, Helvetica, sans-serif;
