@@ -13,7 +13,7 @@ func NewUserTokenStore(db *sqlx.DB) UserTokenStore {
 	return UserTokenStore{db}
 }
 
-const insertUserTokenQuery = `insert into user_tokens (user_id, token, context) values ($1, $2, $3)`
+const insertUserTokenQuery = `insert into user_tokens (user_id, token, context) values ($1, $2, $3) returning *`
 
 func (s *UserTokenStore) InsertToken(token *types.UserToken) (*types.UserToken, error) {
 	var result types.UserToken
