@@ -23,14 +23,10 @@ func main() {
 
 	users := handler.UserHandler(db)
 	r.Get("/", users.New)
+	r.Post("/users/register", users.Create)
 
 	sessions := handler.SessionHandler(db)
 	r.Get("/sign-in", sessions.New)
-
-	r.Group(func(r chi.Router) {
-		r.Use(handler.ParseForm)
-		r.Post("/users/register", users.Create)
-	})
 
 	log.Println("Listening on port 3000")
 	log.Fatal(http.ListenAndServe(":3000", r))

@@ -16,10 +16,6 @@ func init() {
 	gob.Register(types.FlashMessage{})
 }
 
-type RequestContext struct {
-	Title string
-}
-
 var decoder = schema.NewDecoder()
 
 func handleError(w http.ResponseWriter, status int) {
