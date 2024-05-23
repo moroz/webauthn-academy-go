@@ -19,14 +19,14 @@ func NewUserTokenService(db *sqlx.DB) UserTokenService {
 const TOKEN_RAND_SIZE = 32
 const SESSION_VALIDITY_IN_DAYS = 60
 
-func generateRandomToken() []byte {
+func GenerateRandomToken() []byte {
 	var buffer = make([]byte, TOKEN_RAND_SIZE)
 	rand.Read(buffer)
 	return buffer
 }
 
 func (s *UserTokenService) GenerateUserSessionToken(user *types.User) ([]byte, error) {
-	token := generateRandomToken()
+	token := GenerateRandomToken()
 
 	userToken := &types.UserToken{
 		UserId:  user.ID,

@@ -24,7 +24,7 @@ func (s *UserTokenStore) InsertToken(token *types.UserToken) (*types.UserToken, 
 	return &result, nil
 }
 
-const getUserByTokenQuery = `select u.* from users u join user_tokens ut on u.id = ut.user_id where ut.token = $1 and ut.context = $2 and ut.inserted_at > (now() at time zone - ($3 * interval '1 day'))`
+const getUserByTokenQuery = `select u.* from users u join user_tokens ut on u.id = ut.user_id where ut.token = $1 and ut.context = $2 and ut.inserted_at > (now() at time zone 'utc') - ($3 * interval '1 day')`
 
 func (s *UserTokenStore) GetUserByToken(token []byte, context types.UserTokenContext, validityDays int) (*types.User, error) {
 	var result types.User

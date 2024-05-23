@@ -36,7 +36,16 @@ func (s *ServiceTestSuite) TestGenerateUserSessionToken() {
 	user, err := insertUser(s.db)
 	s.NoError(err)
 	srv := service.NewUserTokenService(s.db)
-	actual, err := srv.GenerateUserSessionToken(user)
+	token, err := srv.GenerateUserSessionToken(user)
 	s.NoError(err)
-	s.Len(actual, 32)
+	s.Len(token, 32)
+
+	actualUser, err := srv.GetUserBySessionToken(token)
+	s.NoError(err)
+	s.Equal(user.ID, actualUser.ID)
+
+	fakeToken := service.GenerateRandomToken()
+	actualUser, err = srv.GetUserBySessionToken(fakeToken)
+	s.Error(err)
+	s.Nil(actualUser)
 }
