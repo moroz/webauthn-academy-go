@@ -17,13 +17,17 @@ func SessionHandler(db *sqlx.DB) sessionHandler {
 	return sessionHandler{service.NewUserService(db)}
 }
 
-type sessionsNewAssigns struct {
-	RequestContext
-}
-
 func (h *sessionHandler) New(w http.ResponseWriter, r *http.Request) {
 	err := sessions.New().Render(r.Context(), w)
 	if err != nil {
 		log.Print(err)
 	}
+}
+
+func (h *sessionHandler) Create(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		handleError(w, http.StatusBadRequest)
+		return
+	}
+
 }

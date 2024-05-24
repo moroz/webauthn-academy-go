@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"fmt"
+	"encoding/gob"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -10,21 +10,11 @@ import (
 	"github.com/moroz/webauthn-academy-go/types"
 )
 
-var store = sessions.NewCookieStore(config.SessionSigner)
-
-func ParseForm(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := r.ParseForm()
-		if err != nil {
-			w.Header().Add("content-type", "text/plain; charset=utf-8")
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprint(w, "Bad Request")
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
+func init() {
+	gob.Register(types.FlashMessage{})
 }
+
+var store = sessions.NewCookieStore(config.SessionSigner)
 
 func FetchSession(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

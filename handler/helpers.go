@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/gob"
 	"errors"
 	"log"
 	"net/http"
@@ -11,14 +10,6 @@ import (
 	"github.com/moroz/webauthn-academy-go/config"
 	"github.com/moroz/webauthn-academy-go/types"
 )
-
-func init() {
-	gob.Register(types.FlashMessage{})
-}
-
-type RequestContext struct {
-	Title string
-}
 
 var decoder = schema.NewDecoder()
 
