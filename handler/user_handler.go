@@ -37,6 +37,10 @@ func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 	_, err, validationErrors := h.us.RegisterUser(params)
 
 	if err != nil || validationErrors != nil {
+		addFlash(r, w, types.FlashMessage{
+			Severity: types.FlashMessageSeverity_Error,
+			Content:  "One or more errors prevented the record from being saved. Please review the errors in the form below.",
+		})
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		err := users.New(params, validationErrors).Render(r.Context(), w)

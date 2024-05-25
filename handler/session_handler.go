@@ -23,7 +23,7 @@ func SessionHandler(db *sqlx.DB) sessionHandler {
 }
 
 func (h *sessionHandler) New(w http.ResponseWriter, r *http.Request) {
-	err := sessions.New().Render(r.Context(), w)
+	err := sessions.New("").Render(r.Context(), w)
 	if err != nil {
 		log.Print(err)
 	}
@@ -35,6 +35,24 @@ func (h *sessionHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	email := r.PostForm.Get("email")
+
+	user, err := h.us.AuthenticateUserByEmailPassword(email, r.PostForm.Get("password"))
+
+	if err == nil {
+		h.signUserIn(w, r, user)
+		http.Redirect(w, r, "/", http.StatusMovedPermanently)
+		return
+	}
+
+	addFlash(r, w, types.FlashMessage{
+		Severity: types.FlashMessageSeverity_Error,
+		Content:  "Invalid email/password combination.",
+	})
+	err = sessions.New(email).Render(r.Context(), w)
+	if err != nil {
+		log.Print(err)
+	}
 }
 
 func (h *sessionHandler) signUserIn(w http.ResponseWriter, r *http.Request, user *types.User) {

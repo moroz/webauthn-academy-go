@@ -2,7 +2,7 @@ package sessions
 
 import "github.com/moroz/webauthn-academy-go/templates/layout"
 
-templ New() {
+templ New(email string) {
 	@layout.Unauthenticated("Sign in") {
 		<form action="/sign-in" method="POST" class="card">
 			<header>
@@ -15,6 +15,7 @@ templ New() {
 					id="email"
 					type="email"
 					name="email"
+					value={ email }
 					autocomplete="email"
 					autofocus
 				/>

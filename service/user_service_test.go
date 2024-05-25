@@ -1,6 +1,8 @@
 package service_test
 
 import (
+	"strings"
+
 	"github.com/alexedwards/argon2id"
 	"github.com/moroz/webauthn-academy-go/service"
 	"github.com/moroz/webauthn-academy-go/store"
@@ -68,4 +70,32 @@ func (s *ServiceTestSuite) TestRegisterUserWithDuplicateEmail() {
 	s.Nil(err)
 	msg := validationErrors.FieldOne("Email")
 	s.Equal("has already been taken", msg)
+}
+
+func (s *ServiceTestSuite) TestAuthenticateUserByEmailPassword() {
+	user, err := insertUser(s.db)
+	s.NoError(err)
+
+	examples := []struct {
+		email    string
+		password string
+		expected bool
+	}{
+		{user.Email, PASSWORD, true},
+		{strings.ToUpper(user.Email), PASSWORD, true},
+		{user.Email, "invalid", false},
+		{strings.ToUpper(user.Email), "invalid", false},
+		{"invalid@example.com", PASSWORD, false},
+	}
+	for _, example := range examples {
+		srv := service.NewUserService(s.db)
+		actual, err := srv.AuthenticateUserByEmailPassword(example.email, example.password)
+		if example.expected {
+			s.NoError(err)
+			s.Equal(user.ID, actual.ID)
+		} else {
+			s.Error(err)
+			s.Nil(actual)
+		}
+	}
 }

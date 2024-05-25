@@ -17,6 +17,8 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Use(handler.FetchSession)
+	r.Use(handler.FetchFlash)
 
 	users := handler.UserHandler(db)
 	r.Get("/", users.New)
@@ -24,6 +26,7 @@ func main() {
 
 	sessions := handler.SessionHandler(db)
 	r.Get("/sign-in", sessions.New)
+	r.Post("/sign-in", sessions.Create)
 
 	log.Println("Listening on port 3000")
 	log.Fatal(http.ListenAndServe(":3000", r))

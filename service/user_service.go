@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/alexedwards/argon2id"
 	"github.com/gookit/validate"
 	"github.com/jmoiron/sqlx"
@@ -56,4 +58,22 @@ func (s *UserService) RegisterUser(params types.NewUserParams) (*types.User, err
 	}
 
 	return nil, err, nil
+}
+
+var (
+	UserNotFound    = errors.New("User not found")
+	InvalidPassword = errors.New("Invalid password")
+)
+
+func (s *UserService) AuthenticateUserByEmailPassword(email, password string) (*types.User, error) {
+	user, err := s.store.GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.CheckPassword(password) {
+		return user, nil
+	}
+
+	return nil, InvalidPassword
 }

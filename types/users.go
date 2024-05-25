@@ -3,6 +3,7 @@ package types
 import (
 	"time"
 
+	"github.com/alexedwards/argon2id"
 	"github.com/gookit/validate"
 )
 
@@ -30,4 +31,9 @@ func (p NewUserParams) Messages() map[string]string {
 		"max_len":  "must be between 8 and 80 characters long",
 		"eq_field": "passwords do not match",
 	}
+}
+
+func (u User) CheckPassword(password string) bool {
+	match, _ := argon2id.ComparePasswordAndHash(password, u.PasswordHash)
+	return match
 }
