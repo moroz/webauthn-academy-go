@@ -32,3 +32,4 @@ var DatabaseURL = MustGetenv("DATABASE_URL")
 const SessionContextKey = "session"
 const FlashContextKey = "flash"
 const SessionKey = "_academy_session"
+const SessionUserTokenKey = "user_token"
