@@ -71,3 +71,17 @@ func FetchUserFromSession(db *sqlx.DB) func(http.Handler) http.Handler {
 		})
 	}
 }
+
+func RequireAuthenticatedUser(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if user, ok := r.Context().Value(config.UserContextKey).(*types.User); ok && user != nil {
+			next.ServeHTTP(w, r)
+		}
+
+		addFlash(r, w, types.FlashMessage{
+			Severity: types.FlashMessageSeverity_Info,
+			Content:  "You need to sign in to access this page.",
+		})
+		http.Redirect(w, r, "/sign-in", http.StatusMovedPermanently)
+	})
+}

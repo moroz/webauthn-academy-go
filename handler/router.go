@@ -16,6 +16,8 @@ func Router(db *sqlx.DB) http.Handler {
 	r.Use(FetchFlash)
 
 	r.Group(func(r chi.Router) {
+		r.Use(RequireAuthenticatedUser)
+
 		dashboard := DashboardHandler()
 		r.Get("/", dashboard.Index)
 	})
