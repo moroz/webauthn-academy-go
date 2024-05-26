@@ -35,6 +35,9 @@ func FetchFlash(next http.Handler) http.Handler {
 					flashes = append(flashes, msg)
 				}
 			}
+			if len(messages) > 0 {
+				session.Save(r, w)
+			}
 		}
 		ctx := context.WithValue(r.Context(), config.FlashContextKey, flashes)
 		r = r.WithContext(ctx)

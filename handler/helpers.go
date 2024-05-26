@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"log"
 	"net/http"
@@ -33,4 +34,12 @@ func addFlash(r *http.Request, w http.ResponseWriter, msg types.FlashMessage) er
 		handleError(w, 500)
 	}
 	return err
+}
+
+func addInstantFlash(r *http.Request, msg types.FlashMessage) {
+	if messages, ok := r.Context().Value(config.FlashContextKey).([]types.FlashMessage); ok {
+		messages := append(messages, msg)
+		ctx := context.WithValue(r.Context(), config.FlashContextKey, messages)
+		*r = *r.WithContext(ctx)
+	}
 }

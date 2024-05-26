@@ -45,7 +45,7 @@ func (h *sessionHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	addFlash(r, w, types.FlashMessage{
+	addInstantFlash(r, types.FlashMessage{
 		Severity: types.FlashMessageSeverity_Error,
 		Content:  "Invalid email/password combination.",
 	})

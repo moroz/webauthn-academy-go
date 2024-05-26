@@ -26,8 +26,19 @@ func MustGetenvBase64(key string) []byte {
 	return value
 }
 
+func GetenvWithDefault(key, defValue string) string {
+	str := os.Getenv(key)
+	if str != "" {
+		return str
+	}
+	return defValue
+}
+
 var SessionSigner = MustGetenvBase64("SESSION_KEY_BASE64")
 var DatabaseURL = MustGetenv("DATABASE_URL")
+var Port = GetenvWithDefault("PORT", "3000")
+var Host = GetenvWithDefault("HOST", "0.0.0.0")
+var ListenOn = fmt.Sprintf("%s:%s", Host, Port)
 
 const SessionContextKey = "session"
 const FlashContextKey = "flash"

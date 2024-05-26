@@ -133,3 +133,17 @@ input[type="email"] {
 .button.is-fullwidth {
   width: 100%;
 }
+
+.notification {
+  display: block;
+  padding: 1em;
+  border: 1px solid $primary;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+
+  &.error {
+    border-color: $danger;
+    background: $red-100;
+    color: $red-900;
+  }
+}
