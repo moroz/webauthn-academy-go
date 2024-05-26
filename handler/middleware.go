@@ -6,7 +6,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
+	gorilla "github.com/gorilla/sessions"
+	"github.com/jmoiron/sqlx"
 	"github.com/moroz/webauthn-academy-go/config"
+	"github.com/moroz/webauthn-academy-go/service"
 	"github.com/moroz/webauthn-academy-go/types"
 )
 
@@ -40,7 +43,31 @@ func FetchFlash(next http.Handler) http.Handler {
 			}
 		}
 		ctx := context.WithValue(r.Context(), config.FlashContextKey, flashes)
-		r = r.WithContext(ctx)
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
+}
+
+func FetchUserFromSession(db *sqlx.DB) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			session, ok := r.Context().Value(config.SessionContextKey).(*gorilla.Session)
+			if !ok {
+				handleError(w, 500)
+				return
+			}
+
+			var user *types.User
+
+			if token, ok := session.Values[config.SessionUserTokenKey].([]byte); ok {
+				srv := service.NewUserTokenService(db)
+				userFromToken, err := srv.GetUserBySessionToken(token)
+				if err != nil {
+					user = userFromToken
+				}
+			}
+
+			ctx := context.WithValue(r.Context(), config.UserContextKey, user)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
 }

@@ -15,9 +15,14 @@ func Router(db *sqlx.DB) http.Handler {
 	r.Use(FetchSession)
 	r.Use(FetchFlash)
 
+	r.Group(func(r chi.Router) {
+		dashboard := DashboardHandler()
+		r.Get("/", dashboard.Index)
+	})
+
 	users := UserHandler(db)
-	r.Get("/", users.New)
-	r.Post("/users/register", users.Create)
+	r.Get("/sign-up", users.New)
+	r.Post("/sign-up", users.Create)
 
 	sessions := SessionHandler(db)
 	r.Get("/sign-in", sessions.New)

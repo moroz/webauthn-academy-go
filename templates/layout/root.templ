@@ -39,3 +39,20 @@ templ Unauthenticated(title string) {
 		</div>
 	}
 }
+
+templ sidebar() {
+	<aside>
+		<h1>Academy</h1>
+	</aside>
+}
+
+templ DashboardLayout(title string) {
+	@RootLayout(title) {
+		<div class="layout dashboard">
+			@sidebar()
+			<main>
+				{ children... }
+			</main>
+		</div>
+	}
+}
