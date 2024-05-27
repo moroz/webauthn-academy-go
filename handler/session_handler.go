@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -41,7 +42,7 @@ func (h *sessionHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	if err == nil {
 		h.signUserIn(w, r, user)
-		http.Redirect(w, r, "/", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -53,6 +54,12 @@ func (h *sessionHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Print(err)
 	}
+}
+
+func (h *sessionHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	h.signUserOut(w, r)
+
+	http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 }
 
 func (h *sessionHandler) signUserIn(w http.ResponseWriter, r *http.Request, user *types.User) {
@@ -74,4 +81,19 @@ func (h *sessionHandler) signUserIn(w http.ResponseWriter, r *http.Request, user
 		log.Print(err)
 		handleError(w, 500)
 	}
+}
+
+func (h *sessionHandler) signUserOut(w http.ResponseWriter, r *http.Request) error {
+	session, ok := r.Context().Value(config.SessionContextKey).(*gorilla.Session)
+	if !ok {
+		handleError(w, 500)
+		return errors.New("signUserOut: session not found in request context")
+	}
+
+	delete(session.Values, config.SessionUserTokenKey)
+	if err := session.Save(r, w); err != nil {
+		log.Print(err)
+		handleError(w, 500)
+	}
+	return nil
 }

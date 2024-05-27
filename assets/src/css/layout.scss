@@ -1,0 +1,28 @@
+@import "./variables";
+
+.layout.dashboard {
+  display: grid;
+  grid-template-columns: $sidebar-width 1fr;
+  height: 100vh;
+
+  :is(&)>main {
+    padding: 0 1.25rem;
+  }
+}
+
+.sidebar {
+  background: salmon;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .button {
+    margin: $sidebar-base-padding;
+  }
+}
+
+.sidebar-item {
+  display: block;
+  height: $sidebar-item-height;
+  line-height: $sidebar-item-height;
+}

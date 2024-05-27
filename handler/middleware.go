@@ -60,10 +60,7 @@ func FetchUserFromSession(db *sqlx.DB) func(http.Handler) http.Handler {
 
 			if token, ok := session.Values[config.SessionUserTokenKey].([]byte); ok {
 				srv := service.NewUserTokenService(db)
-				userFromToken, err := srv.GetUserBySessionToken(token)
-				if err != nil {
-					user = userFromToken
-				}
+				user, _ = srv.GetUserBySessionToken(token)
 			}
 
 			ctx := context.WithValue(r.Context(), config.UserContextKey, user)
@@ -76,12 +73,24 @@ func RequireAuthenticatedUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if user, ok := r.Context().Value(config.UserContextKey).(*types.User); ok && user != nil {
 			next.ServeHTTP(w, r)
+			return
 		}
 
 		addFlash(r, w, types.FlashMessage{
 			Severity: types.FlashMessageSeverity_Info,
 			Content:  "You need to sign in to access this page.",
 		})
-		http.Redirect(w, r, "/sign-in", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
+	})
+}
+
+func RedirectIfAuthenticated(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if user, ok := r.Context().Value(config.UserContextKey).(*types.User); !ok || user == nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 }

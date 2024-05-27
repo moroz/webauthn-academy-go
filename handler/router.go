@@ -14,21 +14,29 @@ func Router(db *sqlx.DB) http.Handler {
 	r.Use(middleware.Logger)
 	r.Use(FetchSession)
 	r.Use(FetchFlash)
+	r.Use(FetchUserFromSession(db))
 
 	r.Group(func(r chi.Router) {
 		r.Use(RequireAuthenticatedUser)
 
 		dashboard := DashboardHandler()
 		r.Get("/", dashboard.Index)
+
+		sessions := SessionHandler(db)
+		r.Get("/sign-out", sessions.Delete)
 	})
 
-	users := UserHandler(db)
-	r.Get("/sign-up", users.New)
-	r.Post("/sign-up", users.Create)
+	r.Group(func(r chi.Router) {
+		r.Use(RedirectIfAuthenticated)
 
-	sessions := SessionHandler(db)
-	r.Get("/sign-in", sessions.New)
-	r.Post("/sign-in", sessions.Create)
+		users := UserHandler(db)
+		r.Get("/sign-up", users.New)
+		r.Post("/sign-up", users.Create)
+
+		sessions := SessionHandler(db)
+		r.Get("/sign-in", sessions.New)
+		r.Post("/sign-in", sessions.Create)
+	})
 
 	return r
 }

@@ -41,8 +41,13 @@ templ Unauthenticated(title string) {
 }
 
 templ sidebar() {
-	<aside>
-		<h1>Academy</h1>
+	<aside class="sidebar">
+		<header>
+			<h1>Academy</h1>
+		</header>
+		<footer>
+			<a class="sidebar-item button" href="/sign-out">Sign out</a>
+		</footer>
 	</aside>
 }
 

@@ -50,5 +50,5 @@ func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/sign-in", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 }
