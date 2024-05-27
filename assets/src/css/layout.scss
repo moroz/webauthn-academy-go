@@ -5,16 +5,21 @@
   grid-template-columns: $sidebar-width 1fr;
   height: 100vh;
 
-  :is(&)>main {
+  :is(&) > main {
     padding: 0 1.25rem;
   }
 }
 
 .sidebar {
-  background: salmon;
+  background: white;
+  border-right: 1px solid #cbd5e1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  h1 {
+    margin: $sidebar-base-padding;
+  }
 
   .button {
     margin: $sidebar-base-padding;
