@@ -5,10 +5,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/jmoiron/sqlx"
+	"github.com/moroz/webauthn-academy-go/db/queries"
 )
 
-func Router(db *sqlx.DB) http.Handler {
+func Router(db queries.DBTX) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
