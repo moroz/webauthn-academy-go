@@ -10,6 +10,9 @@ install.assets:
 	cd assets && pnpm install && cd ..
 	go mod download
 
+sqlc.gen:
+	sqlc generate -f db/sqlc.yml
+
 install: install.tools install.assets
 
 guard-%:
