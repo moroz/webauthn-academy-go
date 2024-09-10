@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/moroz/webauthn-academy-go/db/queries"
 	"github.com/moroz/webauthn-academy-go/service"
 	"github.com/moroz/webauthn-academy-go/templates/users"
 	"github.com/moroz/webauthn-academy-go/types"
@@ -14,7 +14,7 @@ type userHandler struct {
 	us service.UserService
 }
 
-func UserHandler(db *sqlx.DB) userHandler {
+func UserHandler(db queries.DBTX) userHandler {
 	return userHandler{service.NewUserService(db)}
 }
 
@@ -34,7 +34,7 @@ func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err, validationErrors := h.us.RegisterUser(params)
+	_, err, validationErrors := h.us.RegisterUser(r.Context(), params)
 
 	if err != nil || validationErrors != nil {
 		addFlash(r, w, types.FlashMessage{

@@ -1,11 +1,12 @@
 package service_test
 
 import (
+	"context"
 	"strings"
 
 	"github.com/alexedwards/argon2id"
+	"github.com/moroz/webauthn-academy-go/db/queries"
 	"github.com/moroz/webauthn-academy-go/service"
-	"github.com/moroz/webauthn-academy-go/store"
 	"github.com/moroz/webauthn-academy-go/types"
 )
 
@@ -18,7 +19,7 @@ func (s *ServiceTestSuite) TestRegisterUser() {
 	}
 
 	srv := service.NewUserService(s.db)
-	user, err, _ := srv.RegisterUser(params)
+	user, err, _ := srv.RegisterUser(context.Background(), params)
 	s.NoError(err)
 	s.Equal(params.Email, user.Email)
 	s.Equal(params.DisplayName, user.DisplayName)
@@ -36,7 +37,7 @@ func (s *ServiceTestSuite) TestRegisterUserWithInvalidParams() {
 	}
 
 	srv := service.NewUserService(s.db)
-	user, err, validationErrors := srv.RegisterUser(params)
+	user, err, validationErrors := srv.RegisterUser(context.Background(), params)
 	s.NoError(err)
 	s.Nil(user)
 	msg := validationErrors.FieldOne("Email")
@@ -48,8 +49,7 @@ func (s *ServiceTestSuite) TestRegisterUserWithInvalidParams() {
 }
 
 func (s *ServiceTestSuite) TestRegisterUserWithDuplicateEmail() {
-	store := store.NewUserStore(s.db)
-	user, err := store.InsertUser(&types.User{
+	user, err := queries.New(s.db).InsertUser(context.Background(), queries.InsertUserParams{
 		Email:        "duplicate@email.com",
 		PasswordHash: "test",
 		DisplayName:  "John Smith",
@@ -65,7 +65,7 @@ func (s *ServiceTestSuite) TestRegisterUserWithDuplicateEmail() {
 		Password:             "foobar123123",
 		PasswordConfirmation: "foobar123123",
 	}
-	user, err, validationErrors := srv.RegisterUser(params)
+	user, err, validationErrors := srv.RegisterUser(context.Background(), params)
 	s.Nil(user)
 	s.Nil(err)
 	msg := validationErrors.FieldOne("Email")
@@ -89,7 +89,7 @@ func (s *ServiceTestSuite) TestAuthenticateUserByEmailPassword() {
 	}
 	for _, example := range examples {
 		srv := service.NewUserService(s.db)
-		actual, err := srv.AuthenticateUserByEmailPassword(example.email, example.password)
+		actual, err := srv.AuthenticateUserByEmailPassword(context.Background(), example.email, example.password)
 		if example.expected {
 			s.NoError(err)
 			s.Equal(user.ID, actual.ID)

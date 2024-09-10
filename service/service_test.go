@@ -1,28 +1,31 @@
 package service_test
 
 import (
+	"context"
 	"crypto/rand"
 	"fmt"
 	"os"
 	"testing"
 
 	"github.com/alexedwards/argon2id"
-	"github.com/jmoiron/sqlx"
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
-	"github.com/moroz/webauthn-academy-go/store"
-	"github.com/moroz/webauthn-academy-go/types"
+	"github.com/moroz/webauthn-academy-go/db/queries"
 	"github.com/stretchr/testify/suite"
 )
 
 type ServiceTestSuite struct {
 	suite.Suite
-	db *sqlx.DB
+	db queries.DBTX
 }
 
 func (s *ServiceTestSuite) SetupTest() {
 	conn := os.Getenv("TEST_DATABASE_URL")
-	s.db = sqlx.MustConnect("postgres", conn)
-	s.db.MustExec("truncate users cascade")
+	db, err := pgxpool.New(context.Background(), conn)
+	s.NoError(err)
+	s.db = db
+	_, err = s.db.Exec(context.Background(), "truncate users cascade")
+	s.NoError(err)
 }
 
 func TestServiceTestSuite(t *testing.T) {
@@ -37,15 +40,14 @@ func generateEmail() string {
 
 const PASSWORD = "foobar"
 
-func insertUser(db *sqlx.DB) (*types.User, error) {
+func insertUser(db queries.DBTX) (*queries.User, error) {
 	hash, _ := argon2id.CreateHash(PASSWORD, argon2id.DefaultParams)
 
-	params := &types.User{
+	params := queries.InsertUserParams{
 		Email:        generateEmail(),
 		PasswordHash: hash,
 		DisplayName:  "Test User",
 	}
 
-	store := store.NewUserStore(db)
-	return store.InsertUser(params)
+	return queries.New(db).InsertUser(context.Background(), params)
 }

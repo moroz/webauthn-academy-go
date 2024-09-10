@@ -5,6 +5,7 @@ import (
 
 	"github.com/alexedwards/argon2id"
 	"github.com/gookit/validate"
+	"github.com/moroz/webauthn-academy-go/db/queries"
 )
 
 type User struct {
@@ -33,7 +34,7 @@ func (p NewUserParams) Messages() map[string]string {
 	}
 }
 
-func (u User) CheckPassword(password string) bool {
-	match, _ := argon2id.ComparePasswordAndHash(password, u.PasswordHash)
+func CheckUserPassword(user *queries.User, password string) bool {
+	match, _ := argon2id.ComparePasswordAndHash(password, user.PasswordHash)
 	return match
 }

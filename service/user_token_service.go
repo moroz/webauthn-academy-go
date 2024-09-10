@@ -1,19 +1,19 @@
 package service
 
 import (
+	"context"
 	"crypto/rand"
 
-	"github.com/jmoiron/sqlx"
-	"github.com/moroz/webauthn-academy-go/store"
+	"github.com/moroz/webauthn-academy-go/db/queries"
 	"github.com/moroz/webauthn-academy-go/types"
 )
 
 type UserTokenService struct {
-	store store.UserTokenStore
+	queries *queries.Queries
 }
 
-func NewUserTokenService(db *sqlx.DB) UserTokenService {
-	return UserTokenService{store.NewUserTokenStore(db)}
+func NewUserTokenService(db queries.DBTX) UserTokenService {
+	return UserTokenService{queries.New(db)}
 }
 
 const TOKEN_RAND_SIZE = 32
@@ -25,22 +25,26 @@ func GenerateRandomToken() []byte {
 	return buffer
 }
 
-func (s *UserTokenService) GenerateUserSessionToken(user *types.User) ([]byte, error) {
+func (s *UserTokenService) GenerateUserSessionToken(ctx context.Context, user *queries.User) ([]byte, error) {
 	token := GenerateRandomToken()
 
-	userToken := &types.UserToken{
-		UserId:  user.ID,
+	userToken := queries.InsertUserTokenParams{
+		UserID:  user.ID,
 		Token:   token,
 		Context: types.UserTokenContext_Session,
 	}
 
-	if _, err := s.store.InsertToken(userToken); err != nil {
+	if _, err := s.queries.InsertUserToken(ctx, userToken); err != nil {
 		return nil, err
 	}
 
 	return token, nil
 }
 
-func (s *UserTokenService) GetUserBySessionToken(token []byte) (*types.User, error) {
-	return s.store.GetUserByToken(token, types.UserTokenContext_Session, SESSION_VALIDITY_IN_DAYS)
+func (s *UserTokenService) GetUserBySessionToken(ctx context.Context, token []byte) (*queries.User, error) {
+	return s.queries.GetUserByToken(ctx, queries.GetUserByTokenParams{
+		Token:        token,
+		Context:      types.UserTokenContext_Session,
+		ValidityDays: SESSION_VALIDITY_IN_DAYS,
+	})
 }

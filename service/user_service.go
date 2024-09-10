@@ -1,13 +1,13 @@
 package service
 
 import (
+	"context"
 	"errors"
 
 	"github.com/alexedwards/argon2id"
 	"github.com/gookit/validate"
-	"github.com/jmoiron/sqlx"
-	"github.com/lib/pq"
-	"github.com/moroz/webauthn-academy-go/store"
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/moroz/webauthn-academy-go/db/queries"
 	"github.com/moroz/webauthn-academy-go/types"
 )
 
@@ -18,14 +18,14 @@ func init() {
 }
 
 type UserService struct {
-	store store.UserStore
+	queries *queries.Queries
 }
 
-func NewUserService(db *sqlx.DB) UserService {
-	return UserService{store.NewUserStore(db)}
+func NewUserService(db queries.DBTX) UserService {
+	return UserService{queries.New(db)}
 }
 
-func (s *UserService) RegisterUser(params types.NewUserParams) (*types.User, error, validate.Errors) {
+func (s *UserService) RegisterUser(ctx context.Context, params types.NewUserParams) (*queries.User, error, validate.Errors) {
 	v := validate.Struct(params)
 
 	if !v.Validate() {
@@ -37,7 +37,7 @@ func (s *UserService) RegisterUser(params types.NewUserParams) (*types.User, err
 		return nil, err, nil
 	}
 
-	user, err := s.store.InsertUser(&types.User{
+	user, err := s.queries.InsertUser(ctx, queries.InsertUserParams{
 		Email:        params.Email,
 		PasswordHash: passwordHash,
 		DisplayName:  params.DisplayName,
@@ -51,7 +51,7 @@ func (s *UserService) RegisterUser(params types.NewUserParams) (*types.User, err
 	// Error 23505 `unique_violation` means that a unique constraint has prevented us from inserting
 	// a duplicate value. Instead of returning a raw error, we return a handcrafted validation error
 	// that we can later display in a form.
-	if err, ok := err.(*pq.Error); ok && err.Code == "23505" && err.Constraint == "users_email_key" {
+	if err, ok := err.(*pgconn.PgError); ok && err.Code == "23505" && err.ConstraintName == "users_email_key" {
 		validationErrors := validate.Errors{}
 		validationErrors.Add("Email", "unique", "has already been taken")
 		return nil, nil, validationErrors
@@ -65,13 +65,13 @@ var (
 	InvalidPassword = errors.New("Invalid password")
 )
 
-func (s *UserService) AuthenticateUserByEmailPassword(email, password string) (*types.User, error) {
-	user, err := s.store.GetUserByEmail(email)
+func (s *UserService) AuthenticateUserByEmailPassword(ctx context.Context, email, password string) (*queries.User, error) {
+	user, err := s.queries.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err
 	}
 
-	if user.CheckPassword(password) {
+	if types.CheckUserPassword(user, password) {
 		return user, nil
 	}
 
