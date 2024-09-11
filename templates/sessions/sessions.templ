@@ -8,6 +8,7 @@ templ New(email string, err error) {
 			<header>
 				<h1>Sign in</h1>
 			</header>
+			@layout.Flash()
 			@layout.ErrorBox(err)
 			<div class="field">
 				<label for="email">Email:</label>

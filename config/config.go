@@ -42,6 +42,6 @@ var ListenOn = fmt.Sprintf("%s:%s", Host, Port)
 
 const SessionContextKey = "session"
 const FlashContextKey = "flash"
-const UserContextKey = "flash"
+const UserContextKey = "user"
 const SessionKey = "_academy_session"
 const SessionUserTokenKey = "user_token"
