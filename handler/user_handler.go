@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -18,8 +19,10 @@ func UserHandler(db queries.DBTX) userHandler {
 	return userHandler{service.NewUserService(db)}
 }
 
+var SignupError = errors.New("One or more errors prevented this user from being created. Please review the errors in the form below.")
+
 func (h *userHandler) New(w http.ResponseWriter, r *http.Request) {
-	err := users.New(types.NewUserParams{}, nil).Render(r.Context(), w)
+	err := users.New(types.NewUserParams{}, nil, nil).Render(r.Context(), w)
 	if err != nil {
 		log.Printf("Rendering error: %s", err)
 	}
@@ -37,13 +40,9 @@ func (h *userHandler) Create(w http.ResponseWriter, r *http.Request) {
 	_, err, validationErrors := h.us.RegisterUser(r.Context(), params)
 
 	if err != nil || validationErrors != nil {
-		addFlash(r, w, types.FlashMessage{
-			Severity: types.FlashMessageSeverity_Error,
-			Content:  "One or more errors prevented the record from being saved. Please review the errors in the form below.",
-		})
 		w.Header().Add("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		err := users.New(params, validationErrors).Render(r.Context(), w)
+		err := users.New(params, SignupError, validationErrors).Render(r.Context(), w)
 		if err != nil {
 			log.Print(err)
 		}

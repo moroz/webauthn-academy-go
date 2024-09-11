@@ -2,13 +2,13 @@ package sessions
 
 import "github.com/moroz/webauthn-academy-go/templates/layout"
 
-templ New(email string) {
+templ New(email string, err error) {
 	@layout.Unauthenticated("Sign in") {
 		<form action="/sign-in" method="POST" class="card">
 			<header>
 				<h1>Sign in</h1>
 			</header>
-			@layout.Flash()
+			@layout.ErrorBox(err)
 			<div class="field">
 				<label for="email">Email:</label>
 				<input

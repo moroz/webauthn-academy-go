@@ -1,8 +1,10 @@
 package users 
 
-import "github.com/gookit/validate"
-import "github.com/moroz/webauthn-academy-go/types"
-import "github.com/moroz/webauthn-academy-go/templates/layout"
+import (
+	"github.com/gookit/validate"
+	"github.com/moroz/webauthn-academy-go/templates/layout"
+	"github.com/moroz/webauthn-academy-go/types"
+)
 
 func fieldClass(error string) string {
 	if error != "" {
@@ -11,13 +13,13 @@ func fieldClass(error string) string {
 	return "field"
 }
 
-templ New(params types.NewUserParams, errors validate.Errors) {
+templ New(params types.NewUserParams, err error, errors validate.Errors) {
 	@layout.Unauthenticated("Register") {
 		<form action="/sign-up" method="POST" class="card">
 			<header>
 				<h1>Register</h1>
 			</header>
-			@layout.Flash()
+			@layout.ErrorBox(err)
 			<div class={ fieldClass(errors.FieldOne("Email")) }>
 				<label for="email">Email:</label>
 				<input

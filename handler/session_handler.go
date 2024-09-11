@@ -9,7 +9,6 @@ import (
 	"github.com/moroz/webauthn-academy-go/db/queries"
 	"github.com/moroz/webauthn-academy-go/service"
 	"github.com/moroz/webauthn-academy-go/templates/sessions"
-	"github.com/moroz/webauthn-academy-go/types"
 
 	gorilla "github.com/gorilla/sessions"
 )
@@ -24,7 +23,7 @@ func SessionHandler(db queries.DBTX) sessionHandler {
 }
 
 func (h *sessionHandler) New(w http.ResponseWriter, r *http.Request) {
-	err := sessions.New("").Render(r.Context(), w)
+	err := sessions.New("", nil).Render(r.Context(), w)
 	if err != nil {
 		log.Print(err)
 	}
@@ -46,11 +45,7 @@ func (h *sessionHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	addInstantFlash(r, types.FlashMessage{
-		Severity: types.FlashMessageSeverity_Error,
-		Content:  "Invalid email/password combination.",
-	})
-	err = sessions.New(email).Render(r.Context(), w)
+	err = sessions.New(email, errors.New("Invalid email/password combination.")).Render(r.Context(), w)
 	if err != nil {
 		log.Print(err)
 	}

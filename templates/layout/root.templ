@@ -1,7 +1,10 @@
 package layout
 
-import "github.com/moroz/webauthn-academy-go/types"
-import "github.com/moroz/webauthn-academy-go/config"
+import (
+	"context"
+	"github.com/moroz/webauthn-academy-go/config"
+	"github.com/moroz/webauthn-academy-go/types"
+)
 
 func fetchFlash(ctx context.Context) []types.FlashMessage {
 	if values, ok := ctx.Value(config.FlashContextKey).([]types.FlashMessage); ok {
@@ -15,6 +18,18 @@ templ Flash() {
 		<div class={ "notification", string(msg.Severity) }>
 			{ msg.Content }
 		</div>
+	}
+}
+
+templ Notification(severity, message string) {
+	<div class={ "notification", severity }>
+		{ message }
+	</div>
+}
+
+templ ErrorBox(err error) {
+	if err != nil {
+		@Notification("error", err.Error())
 	}
 }
 
