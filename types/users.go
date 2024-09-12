@@ -1,21 +1,10 @@
 package types
 
 import (
-	"time"
-
 	"github.com/alexedwards/argon2id"
 	"github.com/gookit/validate"
 	"github.com/moroz/webauthn-academy-go/db/queries"
 )
-
-type User struct {
-	ID           int       `db:"id"`
-	Email        string    `db:"email"`
-	DisplayName  string    `db:"display_name"`
-	PasswordHash string    `db:"password_hash"`
-	InsertedAt   time.Time `db:"inserted_at"`
-	UpdatedAt    time.Time `db:"updated_at"`
-}
 
 type NewUserParams struct {
 	Email                string `schema:"email" validate:"required|email"`

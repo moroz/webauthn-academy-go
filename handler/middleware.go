@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	gorilla "github.com/gorilla/sessions"
 	"github.com/moroz/webauthn-academy-go/config"
 	"github.com/moroz/webauthn-academy-go/db/queries"
 	"github.com/moroz/webauthn-academy-go/service"
@@ -50,7 +49,7 @@ func FetchFlash(next http.Handler) http.Handler {
 func FetchUserFromSession(db queries.DBTX) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			session, ok := r.Context().Value(config.SessionContextKey).(*gorilla.Session)
+			session, ok := r.Context().Value(config.SessionContextKey).(*sessions.Session)
 			if !ok {
 				handleError(w, 500)
 				return
