@@ -2,11 +2,11 @@ version: "2"
 
 sql:
   - engine: "postgresql"
-    queries: "sql/*.sql"
-    schema: "migrations"
+    queries: "db/sql/*.sql"
+    schema: "db/migrations"
     gen:
       go:
-        out: "queries"
+        out: "db/queries"
         sql_package: "pgx/v5"
         emit_pointers_for_null_types: true
         emit_result_struct_pointers: true

@@ -5,6 +5,3 @@ export GOOSE_DRIVER=postgres
 export GOOSE_DBSTRING="$DATABASE_URL"
 export TEST_DATABASE_NAME=academy_test
 export TEST_DATABASE_URL="postgres://postgres:postgres@localhost/${TEST_DATABASE_NAME}?sslmode=disable"
-
-# openssl rand -base64 32 | tr -d '\n' | xclip -sel c
-export SESSION_KEY_BASE64=

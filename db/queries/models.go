@@ -16,30 +16,3 @@ type User struct {
 	InsertedAt   pgtype.Timestamp
 	UpdatedAt    pgtype.Timestamp
 }
-
-type UserToken struct {
-	ID         int64
-	UserID     int64
-	Token      []byte
-	Context    string
-	InsertedAt pgtype.Timestamp
-}
-
-type WebauthnCredential struct {
-	ID                        int64
-	WebauthnID                []byte
-	UserID                    int64
-	PublicKey                 []byte
-	AttestationType           *string
-	Transport                 []string
-	UserPresent               bool
-	UserVerified              bool
-	BackupEligible            bool
-	BackupState               bool
-	AuthenticatorAAGUID       []byte
-	AuthenticatorSignCount    int32
-	AuthenticatorCloneWarning bool
-	AuthenticatorAttachment   *string
-	InsertedAt                pgtype.Timestamp
-	UpdatedAt                 pgtype.Timestamp
-}

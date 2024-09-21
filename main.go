@@ -1,23 +1,23 @@
 package main
 
 import (
-	"context"
+	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/jackc/pgx/v5/pgxpool"
-	_ "github.com/lib/pq"
-	"github.com/moroz/webauthn-academy-go/config"
-	"github.com/moroz/webauthn-academy-go/handler"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
-	db, err := pgxpool.New(context.Background(), config.DatabaseURL)
-	if err != nil {
-		log.Fatal(err)
-	}
+	r := chi.NewRouter()
 
-	r := handler.Router(db)
-	log.Printf("Listening on %s", config.ListenOn)
-	log.Fatal(http.ListenAndServe(config.ListenOn, r))
+	r.Use(middleware.Logger)
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "<h1>Hello from the router!</h1>")
+	})
+
+	log.Println("Listening on port 3000")
+	log.Fatal(http.ListenAndServe(":3000", r))
 }
